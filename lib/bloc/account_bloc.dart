@@ -12,6 +12,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   get accountsStream => null;
 
+  @override
   Stream<AccountState> mapEventToState(AccountEvent event) async* {
     if (event is FetchAccounts) {
       yield* _mapFetchAccountsToState();
@@ -26,7 +27,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Stream<AccountState> _mapFetchAccountsToState() async* {
     try {
-      final accounts = _accountRepository.getAllAccounts();
+      final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
       yield AccountError();
@@ -35,8 +36,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Stream<AccountState> _mapAddAccountToState(Account account) async* {
     try {
-      _accountRepository.addAccount(account);
-      final accounts = _accountRepository.getAllAccounts();
+       _accountRepository.addAccount(account);
+      final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
       yield AccountError();
@@ -46,7 +47,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   Stream<AccountState> _mapUpdateAccountToState(Account account) async* {
     try {
        _accountRepository.updateAccount(account);
-      final accounts =  _accountRepository.getAllAccounts();
+      final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
       yield AccountError();
@@ -56,16 +57,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   Stream<AccountState> _mapDeleteAccountToState(String id) async* {
     try {
       _accountRepository.deleteAccount(id);
-      final accounts =  _accountRepository.getAllAccounts();
+      final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
       yield AccountError();
     }
   }
 
+  void addAccount(Account newAccount) {}
+
+  void updateAccount(Account updatedAccount) {}
+
   void fetchAccounts() {}
 
   void dispose() {}
 
-  void addAccount(Account newAccount) {}
+  void deleteAccount(Account id) {}
 }

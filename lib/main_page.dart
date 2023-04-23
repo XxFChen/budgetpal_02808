@@ -3,6 +3,13 @@ import 'package:budgetpal/model/account.dart';
 import 'package:budgetpal/bloc/account_bloc.dart';
 import 'package:budgetpal/repository/account_repository.dart';
 import 'package:budgetpal/add_account_page.dart';
+import 'package:budgetpal/account_details_page.dart';
+import 'package:budgetpal/edit_account_page.dart';
+import 'package:budgetpal/bloc/transaction_bloc.dart';
+import 'package:budgetpal/repository/transaction_repository.dart';
+import 'package:budgetpal/transaction_list_page.dart';
+import 'package:budgetpal/add_transaction_page.dart'; // Make sure this import is added
+import 'package:budgetpal/budget_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -14,6 +21,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final AccountBloc _accountBloc = AccountBloc(AccountRepository());
+  final TransactionBloc _transactionBloc = TransactionBloc(TransactionRepository());
 
   @override
   void initState() {
@@ -26,6 +34,32 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accounts'),
+        actions: [
+          // Add transaction button
+          IconButton(
+            icon: const Icon(Icons.add_box),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddTransactionPage(),
+                ),
+              );
+            },
+          ),
+          // Other existing buttons
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionListPage(transactionBloc: _transactionBloc, account: null,),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<List<Account>>(
         stream: _accountBloc.accountsStream,
@@ -39,6 +73,36 @@ class _MainPageState extends State<MainPage> {
                 return ListTile(
                   title: Text(account.name),
                   subtitle: Text('Balance: \$${account.balance}'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AccountDetailsPage(account: account, accountBloc: _accountBloc),
+                      ),
+                    );
+                  },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditAccountPage(account: account, accountBloc: _accountBloc),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _accountBloc.deleteAccount(account.id as Account);
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
                 );
               },
             );
@@ -54,7 +118,7 @@ class _MainPageState extends State<MainPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddAccountPage(accountBloc: _accountBloc),
+              builder: (context) => const BudgetPage(),
             ),
           );
         },
@@ -64,8 +128,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
-  void dispose() {
+    void dispose() {
     _accountBloc.dispose();
     super.dispose();
   }
 }
+
