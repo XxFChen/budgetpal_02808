@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:budgetpal/login_page.dart';
-import 'package:budgetpal/main_page.dart';
+
+import 'main_page.dart'; // 导入MainWithCategoryPage
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),
+      home: MainWithCategoryPage(), // 使用MainWithCategoryPage作为主页
     );
   }
 }

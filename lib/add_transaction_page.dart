@@ -1,8 +1,9 @@
+import 'package:budgetpal/bloc/transaction_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddTransactionPage extends StatefulWidget {
-  const AddTransactionPage({Key? key}) : super(key: key);
+  const AddTransactionPage({Key? key, required TransactionBloc transactionBloc}) : super(key: key);
 
   @override
   _AddTransactionPageState createState() => _AddTransactionPageState();

@@ -10,12 +10,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   TransactionBloc(this._transactionRepository) : super(TransactionLoading());
 
-  get transactionsStream => null;
-
   @override
   Stream<TransactionState> mapEventToState(TransactionEvent event) async* {
     if (event is FetchTransactions) {
-      yield* _mapFetchTransactionsToState();
+      yield* _mapFetchTransactionsToState(event.accountId);
     } else if (event is AddTransaction) {
       yield* _mapAddTransactionToState(event.transaction);
     } else if (event is UpdateTransaction) {
@@ -25,9 +23,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Stream<TransactionState> _mapFetchTransactionsToState() async* {
+  Stream<TransactionState> _mapFetchTransactionsToState(String accountId) async* {
     try {
-      final transactions = await _transactionRepository.getAllTransactions();
+      final transactions = await _transactionRepository.getAllTransactions(accountId);
       yield TransactionsLoaded(transactions);
     } catch (_) {
       yield TransactionError();
@@ -36,8 +34,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Stream<TransactionState> _mapAddTransactionToState(Transaction transaction) async* {
     try {
-      await _transactionRepository.addTransaction(transaction);
-      final transactions = await _transactionRepository.getAllTransactions();
+      _transactionRepository.addTransaction(transaction);
+      final transactions = await _transactionRepository.getAllTransactions(transaction.accountId);
       yield TransactionsLoaded(transactions);
     } catch (_) {
       yield TransactionError();
@@ -46,8 +44,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Stream<TransactionState> _mapUpdateTransactionToState(Transaction transaction) async* {
     try {
-      await _transactionRepository.updateTransaction(transaction);
-      final transactions = await _transactionRepository.getAllTransactions();
+      _transactionRepository.updateTransaction(transaction);
+      final transactions = await _transactionRepository.getAllTransactions(transaction.accountId);
       yield TransactionsLoaded(transactions);
     } catch (_) {
       yield TransactionError();
@@ -56,15 +54,28 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   Stream<TransactionState> _mapDeleteTransactionToState(String id) async* {
     try {
-      await _transactionRepository.deleteTransaction(id);
-      final transactions = await _transactionRepository.getAllTransactions();
+      _transactionRepository.deleteTransaction(id);
+      final transactions = await _transactionRepository.getAllTransactions(''); // TODO: Provide the correct accountId
       yield TransactionsLoaded(transactions);
     } catch (_) {
       yield TransactionError();
     }
   }
+  
+
+  // Add this getter
+  Stream<List<Transaction>> get transactionsStream => state.map((state) {
+    if (state is TransactionsLoaded) {
+      return state.transactions;
+    } else {
+      return [];
+    }
+  });
+
+  // Add this method
+  void dispose() {
+    close();
+  }
 
   void fetchTransactions() {}
-
-  void dispose() {}
 }

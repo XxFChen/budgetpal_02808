@@ -8,12 +8,19 @@ abstract class TransactionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchTransactions extends TransactionEvent {}
+class FetchTransactions extends TransactionEvent {
+  final String accountId;
+
+  FetchTransactions(String id, {required this.accountId});
+
+  @override
+  List<Object> get props => [accountId];
+}
 
 class AddTransaction extends TransactionEvent {
   final Transaction transaction;
 
-  const AddTransaction(this.transaction);
+  AddTransaction({required this.transaction});
 
   @override
   List<Object> get props => [transaction];
@@ -22,16 +29,19 @@ class AddTransaction extends TransactionEvent {
 class UpdateTransaction extends TransactionEvent {
   final Transaction transaction;
 
-  const UpdateTransaction(this.transaction);
+  UpdateTransaction({required this.transaction});
 
   @override
   List<Object> get props => [transaction];
 }
 
+
+
+
 class DeleteTransaction extends TransactionEvent {
   final String id;
 
-  const DeleteTransaction(this.id);
+  DeleteTransaction({required this.id});
 
   @override
   List<Object> get props => [id];

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'main_page.dart'; // 导入 main_page.dart
+import 'main_page.dart';
+import 'package:budgetpal/bloc/transaction_bloc.dart';
+import 'package:budgetpal/bloc/account_bloc.dart';
+
+
+final AccountBloc accountBloc = AccountBloc();
+final TransactionBloc transactionBloc = TransactionBloc();
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key); // 添加 key 参数
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -31,15 +36,17 @@ class _LoginPageState extends State<LoginPage> {
     final username = _usernameController.text;
     final password = _passwordController.text;
 
-    // 在这里添加验证用户名和密码的逻辑
     if (_validateUsername(username) == null && _validatePassword(password) == null) {
-      // 验证通过，导航到 MainPage
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+        MaterialPageRoute(
+          builder: (context) => MainPage(
+            accountBloc: accountBloc,
+            transactionBloc: transactionBloc,
+          ),
+        ),
       );
     } else {
-      // 显示错误信息
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid username or password')),
       );

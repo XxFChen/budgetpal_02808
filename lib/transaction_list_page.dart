@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budgetpal/model/account.dart';
 import 'package:budgetpal/model/transaction.dart';
 import 'package:budgetpal/bloc/transaction_bloc.dart';
 import 'package:budgetpal/repository/transaction_repository.dart';
@@ -6,11 +7,11 @@ import 'package:budgetpal/add_transaction_page.dart';
 
 class TransactionListPage extends StatefulWidget {
   final TransactionBloc transactionBloc;
+  final Account? account;
 
-  const TransactionListPage({Key? key, required this.transactionBloc, required account}) : super(key: key);
+  const TransactionListPage({Key? key, required this.transactionBloc, this.account}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _TransactionListPageState createState() => _TransactionListPageState();
 }
 
@@ -68,7 +69,4 @@ class _TransactionListPageState extends State<TransactionListPage> {
     widget.transactionBloc.dispose();
     super.dispose();
   }
-  
-  // ignore: non_constant_identifier_names
-  AddTransactionPage({required TransactionBloc transactionBloc}) {}
 }

@@ -6,6 +6,8 @@ abstract class TransactionState extends Equatable {
 
   @override
   List<Object> get props => [];
+
+  map(List Function(dynamic state) param0) {}
 }
 
 class TransactionLoading extends TransactionState {}
@@ -13,7 +15,7 @@ class TransactionLoading extends TransactionState {}
 class TransactionsLoaded extends TransactionState {
   final List<Transaction> transactions;
 
-  const TransactionsLoaded(this.transactions);
+  const TransactionsLoaded([this.transactions = const []]);
 
   @override
   List<Object> get props => [transactions];
