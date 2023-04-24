@@ -10,22 +10,26 @@ import 'package:budgetpal/repository/transaction_repository.dart';
 import 'package:budgetpal/transaction_list_page.dart';
 import 'package:budgetpal/add_transaction_page.dart'; // Make sure this import is added
 import 'package:budgetpal/budget_page.dart';
+import 'package:budgetpal/database/database_provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  final AccountBloc _accountBloc = AccountBloc(AccountRepository());
-  final TransactionBloc _transactionBloc = TransactionBloc(TransactionRepository());
+  late final DatabaseProvider _databaseProvider;
+  late final AccountBloc _accountBloc;
+  late final TransactionBloc _transactionBloc;
 
   @override
   void initState() {
     super.initState();
+    _databaseProvider = DatabaseProvider();
+    _accountBloc = AccountBloc(AccountRepository(_databaseProvider));
+    _transactionBloc = TransactionBloc(TransactionRepository(_databaseProvider));
     _accountBloc.fetchAccounts();
   }
 
@@ -97,7 +101,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                       IconButton(
                         onPressed: () {
-                          _accountBloc.deleteAccount(account.id as Account);
+                          _accountBloc.deleteAccount(account.id as String);
                         },
                         icon: const Icon(Icons.delete),
                       ),
@@ -119,7 +123,7 @@ class _MainPageState extends State<MainPage> {
             context,
             MaterialPageRoute(
               builder: (context) => const BudgetPage(),
-            ),
+           ),
           );
         },
         child: const Icon(Icons.add),
@@ -128,9 +132,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
-    void dispose() {
+  void dispose() {
     _accountBloc.dispose();
     super.dispose();
   }
 }
-

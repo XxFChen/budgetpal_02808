@@ -7,7 +7,7 @@ class FetchAccounts extends AccountEvent {}
 class AddAccount extends AccountEvent {
   final Account account;
 
-  AddAccount(this.account);
+  AddAccount(this.account); // 删除 {required Account account}
 }
 
 class UpdateAccount extends AccountEvent {

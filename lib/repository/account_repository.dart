@@ -1,7 +1,10 @@
+import 'package:budgetpal/database/database_provider.dart';
 import 'package:budgetpal/model/account.dart';
 
 class AccountRepository {
   final List<Account> _accounts = [];
+
+  AccountRepository(DatabaseProvider databaseProvider);
 
   List<Account> getAllAccounts() => _accounts;
 

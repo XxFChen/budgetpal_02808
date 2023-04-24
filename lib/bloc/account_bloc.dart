@@ -36,7 +36,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Stream<AccountState> _mapAddAccountToState(Account account) async* {
     try {
-       _accountRepository.addAccount(account);
+      _accountRepository.addAccount(account);
       final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
@@ -46,7 +46,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Stream<AccountState> _mapUpdateAccountToState(Account account) async* {
     try {
-       _accountRepository.updateAccount(account);
+      _accountRepository.updateAccount(account);
       final accounts = await _accountRepository.getAllAccounts();
       yield AccountsLoaded(accounts);
     } catch (_) {
@@ -64,13 +64,22 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  void addAccount(Account newAccount) {}
+void updateAccount(Account account) {
+  add(UpdateAccount(account));
+}
 
-  void updateAccount(Account updatedAccount) {}
+void addAccount(Account account) {
+  add(AddAccount(account));
+}
+void fetchAccounts() {
+  add(FetchAccounts());
+}
+void deleteAccount(String id) {
+  add(DeleteAccount(id));
+}
+void dispose() {
+  close();
+}
 
-  void fetchAccounts() {}
 
-  void dispose() {}
-
-  void deleteAccount(Account id) {}
 }
