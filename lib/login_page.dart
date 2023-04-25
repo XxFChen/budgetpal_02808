@@ -1,11 +1,15 @@
+import 'package:budgetpal/repository/account_repository.dart';
+import 'package:budgetpal/repository/transaction_repository.dart';
+import 'package:budgetpal/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'main_page.dart';
 import 'package:budgetpal/bloc/transaction_bloc.dart';
 import 'package:budgetpal/bloc/account_bloc.dart';
 
+import 'model/user.dart';
 
-final AccountBloc accountBloc = AccountBloc();
-final TransactionBloc transactionBloc = TransactionBloc();
+
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -17,6 +21,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final AccountBloc accountBloc = AccountBloc(AccountRepository());
+  final TransactionBloc transactionBloc = TransactionBloc(TransactionRepository());
 
   String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
@@ -32,11 +39,14 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  void _onLoginPressed(BuildContext context) {
+  void _onLoginPressed(BuildContext context) async {
     final username = _usernameController.text;
     final password = _passwordController.text;
 
-    if (_validateUsername(username) == null && _validatePassword(password) == null) {
+    UserRepository userRepository = UserRepository(/* Pass your DatabaseProvider instance */);
+    User? user = await userRepository.getUserByUsernameAndPassword(username, password);
+
+    if (user != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -52,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

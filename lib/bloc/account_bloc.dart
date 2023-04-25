@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:budgetpal/bloc/account_event.dart';
 import 'package:budgetpal/bloc/account_state.dart';
 import 'package:budgetpal/model/account.dart';
+import 'package:budgetpal/model/currency.dart'; // Import the Currency model
 import 'package:budgetpal/repository/account_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -64,22 +64,23 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-void updateAccount(Account account) {
-  add(UpdateAccount(account));
-}
+  void updateAccount(Account account) {
+    add(UpdateAccount(account));
+  }
 
-void addAccount(Account account) {
-  add(AddAccount(account));
-}
-void fetchAccounts() {
-  add(FetchAccounts());
-}
-void deleteAccount(String id) {
-  add(DeleteAccount(id));
-}
-void dispose() {
-  close();
-}
+  void addAccount(Account account) {
+    add(AddAccount(account));
+  }
 
+  void fetchAccounts() {
+    add(FetchAccounts());
+  }
 
+  void deleteAccount(String id) {
+    add(DeleteAccount(id));
+  }
+
+  void dispose() {
+    close();
+  }
 }

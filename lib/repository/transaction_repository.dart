@@ -2,7 +2,6 @@ import 'package:budgetpal/database/database_provider.dart';
 import 'package:budgetpal/model/transaction.dart';
 
 class TransactionRepository {
-  // TODO: Replace with actual data storage implementation
   final List<Transaction> _transactions = [];
 
   TransactionRepository(DatabaseProvider databaseProvider);
